@@ -188,8 +188,13 @@
 ### US15 — Preferências de acessibilidade funcionais
 **Como** usuário, **quero** configurar alto contraste, tamanho de fonte e velocidade da voz, **para** adaptar o app às minhas necessidades.
 
-- **Status:** 💤 Backlog (UI existe como placeholder sem ação em `profile_screen.dart`)
-- **Critérios de aceite (proposta):** preferências persistidas e aplicadas globalmente; velocidade da voz altera `setSpeechRate`.
+- **Status:** ✅ Modo Alto Contraste implementado / 💤 Outras opções em backlog
+- **Critérios de aceite:**
+  - [x] Switch "Modo Alto Contraste" ativa tema de alto contraste em toda a aplicação instantaneamente.
+  - [x] Desativar o switch retorna ao tema padrão.
+  - [x] Preferência de alto contraste persistida em `shared_preferences` entre sessões.
+  - [x] Tema atende alto contraste (WCAG AAA com fundo preto e destaques amarelos).
+  - [ ] Ajuste de tamanho de fonte e velocidade da voz (backlog).
 
 ---
 
@@ -223,5 +228,5 @@
 | US12 | Tempo previsto com alertas | 🔜 | S3 |
 | US13 | Registrar conclusão do exercício | 🔜 | S3 |
 | US14 | Ler tela em voz alta | ✅ | — |
-| US15 | Preferências de acessibilidade | 💤 | Backlog |
+| US15 | Preferências de acessibilidade (Alto Contraste) | ✅ | — |
 | US16–US20 | Backlog futuro | 💤 | — |
