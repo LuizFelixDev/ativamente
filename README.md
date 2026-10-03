@@ -44,10 +44,13 @@ cd ativamente
 
 # 2. Instale as dependências do sistema (se ainda não instalou)
 sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev \
-  liblzma-dev libstdc++-12-dev
+  liblzma-dev libstdc++-12-dev jq
 
 # 3. Instale os SDKs via ASDF (recomendado)
-asdf install    # lê .tool-versions e instala Flutter + Java
+. ~/.asdf/asdf.sh          # inicializa o asdf no terminal se necessário
+asdf plugin add flutter    # adiciona o plugin do Flutter
+asdf plugin add java       # adiciona o plugin do Java (para emuladores)
+asdf install               # lê .tool-versions e instala Flutter + Java
 
 # 4. Instale o Firebase CLI e faça login
 npm install -g firebase-tools
@@ -77,15 +80,14 @@ Acesse `http://localhost:3000` no navegador.
 
 ### Primeiro acesso e dados de teste
 
-O app inicia na tela de boas-vindas — crie sua conta em **"Criar conta"** ou entre com um usuário existente.
+Ao executar o app com as variáveis de ambiente (`--dart-define-from-file=.env`), o aplicativo executa automaticamente o **seed inicial** no startup:
 
-Para popular o banco com exercícios de exemplo e contas de teste:
+1. **Exercícios de exemplo:** Povoa o Firestore com o catálogo completo de exercícios (`assets/data/exercises.json`);
+2. **Contas de teste:** Cria/verifica automaticamente os usuários de teste no Auth:
+   - **Admin:** `ativamente@ativamente.org` (senha: `dev123456`)
+   - **Personal Trainer:** `personal@ativamente.org` (senha: `dev123456`)
 
-1. Cadastre-se normalmente;
-2. No Console do Firebase (`ativamente-97e20`), promova seu documento em `Pessoas/{seu-uid}` com o campo `role: "admin"`;
-3. Faça login no app → **Perfil → Admin → Seed Database**.
-
-Isso cria os exercícios de exemplo e as contas `ativamente@ativamente.org` / `personal@ativamente.org` (senha padrão `dev123456`) com papéis `admin` e `trainer`.
+Você também pode se cadastrar normalmente na tela de boas-vindas.
 
 ## Banco de dados para testes locais
 
@@ -111,7 +113,7 @@ flutter run -d web-server --web-port=3000 --dart-define-from-file=.env
   ```bash
   FIREBASE_EMULATOR_HOST=10.0.2.2
   ```
-- O banco do emulador começa vazio: use **Perfil → Admin → Seed Database** para popular exercícios e contas de teste localmente.
+- O app executa o seed automático no startup assim que se conecta aos emuladores.
 - Com os emuladores ativos, o seed e o cadastro de usuários admin também são direcionados ao ambiente local.
 
 ## Comandos úteis
@@ -121,6 +123,7 @@ flutter pub get          # instalar dependências
 flutter analyze          # análise estática (obrigatória antes do PR)
 dart fix --apply         # corrigir lints mecânicos automaticamente
 flutter test             # testes unitários/widget
+flutter test --coverage  # rodar testes e coletar cobertura (gera coverage/lcov.info)
 flutter run -d web-server --web-port=3000 --dart-define-from-file=.env  # executar em debug
 flutter build apk        # build Android
 flutter build web        # build Web
