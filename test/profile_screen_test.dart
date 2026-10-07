@@ -40,6 +40,8 @@ void main() {
     Switch switchWidget = tester.widget<Switch>(switchFinder);
     expect(switchWidget.value, false);
 
+    await tester.ensureVisible(switchFinder);
+    await tester.pumpAndSettle();
     await tester.tap(switchFinder);
     await tester.pumpAndSettle();
 
