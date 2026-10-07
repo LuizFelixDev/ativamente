@@ -83,8 +83,8 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
               children: [
                 Text(
                   _formatTime(_seconds),
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
                     fontSize: 72,
                     fontWeight: FontWeight.bold,
                   ),
@@ -97,7 +97,7 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                       onTap: _toggleTimer,
                       child: CircleAvatar(
                         radius: 30,
-                        backgroundColor: Colors.white,
+                        backgroundColor: Theme.of(context).colorScheme.onPrimary,
                         child: Icon(
                           _isRunning ? Icons.pause : Icons.play_arrow,
                           size: 40,
@@ -110,7 +110,7 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                       onTap: _stopTimer,
                       child: CircleAvatar(
                         radius: 30,
-                        backgroundColor: Colors.white,
+                        backgroundColor: Theme.of(context).colorScheme.onPrimary,
                         child: Icon(
                           Icons.stop,
                           size: 40,
@@ -207,7 +207,7 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
         child: CircleAvatar(
           radius: 30,
           backgroundColor: Theme.of(context).colorScheme.primary,
-          child: Icon(icon, color: Colors.white, size: 30),
+          child: Icon(icon, color: Theme.of(context).colorScheme.onPrimary, size: 30),
         ),
       ),
     );
