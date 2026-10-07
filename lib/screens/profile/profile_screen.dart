@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../providers/accessibility_provider.dart';
 import '../../providers/tts_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/seed_provider.dart';
@@ -13,6 +14,7 @@ class ProfileScreen extends ConsumerWidget {
     const screenText = "Tela de Perfil. Configurações de acessibilidade. Sair da conta.";
     final readScreen = ref.watch(readScreenProvider(screenText));
     final userDataAsync = ref.watch(userDataProvider);
+    final isHighContrast = ref.watch(highContrastProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,10 +35,10 @@ class ProfileScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(24.0),
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 60,
-            backgroundColor: Color(0xFF1E315A),
-            child: Icon(Icons.person, size: 80, color: Colors.white),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: Icon(Icons.person, size: 80, color: Theme.of(context).colorScheme.onPrimary),
           ),
           const SizedBox(height: 24),
           userDataAsync.when(
@@ -94,15 +96,17 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 48),
-          const Text(
+          Text(
             'Acessibilidade',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E315A)),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
           ),
           const Divider(),
           SwitchListTile(
             title: const Text('Modo Alto Contraste', style: TextStyle(fontSize: 18)),
-            value: false,
-            onChanged: (value) {},
+            value: isHighContrast,
+            onChanged: (value) {
+              ref.read(highContrastProvider.notifier).setHighContrast(value);
+            },
           ),
           ListTile(
             title: const Text('Tamanho da Fonte', style: TextStyle(fontSize: 18)),
@@ -121,9 +125,9 @@ class ProfileScreen extends ConsumerWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
+                    Text(
                       'Admin (Testes)',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E315A)),
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
                     ),
                     const Divider(),
                     ElevatedButton(
