@@ -4,18 +4,13 @@ import 'package:app_academia/models/pessoa.dart';
 import 'package:app_academia/providers/auth_provider.dart';
 
 class FakeUser extends Fake implements User {
-  final String? _displayName;
-  final String? _email;
-
-  FakeUser({String? displayName, String? email})
-      : _displayName = displayName,
-        _email = email;
+  @override
+  final String? displayName;
 
   @override
-  String? get displayName => _displayName;
+  final String? email;
 
-  @override
-  String? get email => _email;
+  FakeUser({this.displayName, this.email});
 }
 
 void main() {
