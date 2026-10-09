@@ -34,17 +34,10 @@ class ProfileScreen extends ConsumerWidget {
             child: Icon(Icons.person, size: 80, color: Colors.white),
           ),
           const SizedBox(height: 24),
-          userDataAsync.when(
-            data: (pessoa) => Text(
-              pessoa?.nome ?? 'Nome do Usuário',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, stack) => const Text(
-              'Erro ao carregar',
-              textAlign: TextAlign.center,
-            ),
+          Text(
+            ref.watch(userDisplayNameProvider),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 48),
           const Text(
