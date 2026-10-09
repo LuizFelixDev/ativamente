@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../providers/accessibility_provider.dart';
 import '../../providers/tts_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/seed_provider.dart';
@@ -13,11 +14,17 @@ class ProfileScreen extends ConsumerWidget {
     const screenText = "Tela de Perfil. Configurações de acessibilidade. Sair da conta.";
     final readScreen = ref.watch(readScreenProvider(screenText));
     final userDataAsync = ref.watch(userDataProvider);
+    final isHighContrast = ref.watch(highContrastProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil', style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.edit, size: 28),
+            tooltip: 'Editar perfil',
+            onPressed: () => context.push('/edit-profile'),
+          ),
           IconButton(
             icon: const Icon(Icons.volume_up, size: 28),
             onPressed: readScreen,
@@ -28,27 +35,87 @@ class ProfileScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(24.0),
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 60,
-            backgroundColor: Color(0xFF1E315A),
-            child: Icon(Icons.person, size: 80, color: Colors.white),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: Icon(Icons.person, size: 80, color: Theme.of(context).colorScheme.onPrimary),
           ),
           const SizedBox(height: 24),
-          Text(
-            ref.watch(userDisplayNameProvider),
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          userDataAsync.when(
+            data: (pessoa) {
+              final nome = ref.watch(userDisplayNameProvider);
+              final dataNasc = (pessoa?.dataNascimento != null && pessoa!.dataNascimento.isNotEmpty)
+                  ? pessoa.dataNascimento
+                  : 'Não informada';
+              final telefone = (pessoa?.numTelefone != null && pessoa!.numTelefone.isNotEmpty)
+                  ? pessoa.numTelefone
+                  : 'Não informado';
+              final peso = (pessoa?.peso != null && pessoa!.peso > 0)
+                  ? '${pessoa.peso} kg'
+                  : 'Não informado';
+              final altura = (pessoa?.altura != null && pessoa!.altura > 0)
+                  ? '${pessoa.altura} m'
+                  : 'Não informada';
+
+              return Column(
+                children: [
+                  Text(
+                    nome,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Nascimento: $dataNasc',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Telefone: $telefone',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Peso: $peso',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Altura: $altura',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ],
+              );
+            },
+            loading: () => Column(
+              children: [
+                Text(
+                  ref.watch(userDisplayNameProvider),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                const Center(child: CircularProgressIndicator()),
+              ],
+            ),
+            error: (err, stack) => Text(
+              ref.watch(userDisplayNameProvider),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
           ),
           const SizedBox(height: 48),
-          const Text(
+          Text(
             'Acessibilidade',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E315A)),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
           ),
           const Divider(),
           SwitchListTile(
             title: const Text('Modo Alto Contraste', style: TextStyle(fontSize: 18)),
-            value: false,
-            onChanged: (value) {},
+            value: isHighContrast,
+            onChanged: (value) {
+              ref.read(highContrastProvider.notifier).setHighContrast(value);
+            },
           ),
           ListTile(
             title: const Text('Tamanho da Fonte', style: TextStyle(fontSize: 18)),
@@ -67,9 +134,9 @@ class ProfileScreen extends ConsumerWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
+                    Text(
                       'Admin (Testes)',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1E315A)),
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
                     ),
                     const Divider(),
                     ElevatedButton(

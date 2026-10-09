@@ -25,7 +25,7 @@
 - **Critérios de aceite:**
   - [x] Cadastro cria usuário no Firebase Auth e documento na coleção `Pessoas`.
   - [x] Após cadastro, usuário é redirecionado para a Home autenticado.
-  - [x] Erros (e-mail inválido/duplicado, senha fraca) exibidos via SnackBar.
+  - [x] Erros (e-mail inválido/duplicado, senha fraca) exibidos via SnackBar e em card vermelho de alerta no topo do formulário (acessibilidade para idosos).
 
 ### US02 — Autenticar-se
 **Como** usuário cadastrado, **quero** entrar com e-mail e senha, **para** ter acesso às telas privadas do app.
@@ -36,7 +36,7 @@
   - [x] Login com e-mail/senha válido leva à Home.
   - [x] Rotas privadas (`/home`, `/workout`, `/profile`, `/add-user`) redirecionam não autenticados para `/` (guarda em `lib/routes.dart`).
   - [x] Senha oculta com alternância visibilidade.
-- **Observações:** campo aceita "Email ou Nome" na UI, mas só e-mail funciona hoje — ajustar rótulo ou implementar login por nome.
+- **Observações:** campo aceita "Email ou Nome" na UI, mas o login funciona apenas via E-mail. Discussão aberta na Issue #21 para restringir e-mail de forma definitiva e adequar o rótulo para 'E-mail'.
 
 ### US03 — Encerrar sessão
 **Como** usuário autenticado, **quero** sair da conta, **para** impedir uso do app por outra pessoa no mesmo aparelho.
@@ -73,12 +73,24 @@
 - **Casos de Teste (QA):** CT-US05-01 a CT-US05-05 em `docs/qa-matriz-testes.md`.
 
 ### US06 — Editar meus dados biométricos
-**Como** usuário, **quero** editar altura, peso, data de nascimento, gênero, cidade, comorbidade e frequência de atividade física, **para** manter meu perfil atualizado conforme o design original (`Pessoa`) / backend (`PerfilUsuario`).
+**Como** usuário, **quero** editar altura, peso, data de nascimento e telefone, **para** manter meu perfil atualizado.
 
-- **Status:** 💤 Backlog (modelo já suporta: `pessoa.dart`)
-- **Critérios de aceite (proposta):**
-  - [ ] Formulário de edição com máscaras e validações equivalentes ao design original (Zod): data de nascimento com idade mínima de 14 anos, telefone com DDD etc.
-  - [ ] Alterações persistidas em `Pessoas/{uid}`.
+- **Status:** 🔜 Sprint 4 (Issue #13 / PR #23)
+- **Critérios de aceite / Regras de negócio:**
+  - [ ] **Data de Nascimento:**
+    - Formato com máscara automática (`DD/MM/AAAA`) e limite máximo de 10 caracteres.
+    - Validação contra datas de calendário inexistentes (ex.: 31/02/2020) e bloqueio de datas no futuro.
+    - Validação de idade mínima obrigatória de 14 anos.
+  - [ ] **Telefone com DDD:**
+    - Indicação explícita de formato no rótulo/hint (`(XX) XXXXX-XXXX`).
+    - Máscara automática e limite de caracteres (máximo 15 caracteres para `(XX) XXXXX-XXXX`).
+    - Exibição do número de telefone também na tela de visualização do Perfil (`ProfileScreen`).
+  - [ ] **Peso e Altura:**
+    - Aceita decimais com ponto ou vírgula (normalizar com `replaceAll(',', '.')`).
+    - Altura aceita em metros (0,50 a 2,50) ou em centímetros (50 a 250), normalizando para metros antes de persistir.
+  - [ ] **Acessibilidade & TTS:**
+    - Botão "Ler tela" (TTS) presente na AppBar da tela de edição.
+    - Fontes legíveis (fontSize >= 18) e áreas de toque ampliadas para o público idoso.
 
 ---
 
@@ -176,8 +188,14 @@
 ### US15 — Preferências de acessibilidade funcionais
 **Como** usuário, **quero** configurar alto contraste, tamanho de fonte e velocidade da voz, **para** adaptar o app às minhas necessidades.
 
-- **Status:** 💤 Backlog (UI existe como placeholder sem ação em `profile_screen.dart`)
-- **Critérios de aceite (proposta):** preferências persistidas e aplicadas globalmente; velocidade da voz altera `setSpeechRate`.
+- **Status:** ✅ Modo Alto Contraste implementado / 💤 Outras opções em backlog
+- **Critérios de aceite:**
+  - [x] Switch "Modo Alto Contraste" ativa tema de alto contraste em toda a aplicação instantaneamente.
+  - [x] Desativar o switch retorna ao tema padrão.
+  - [x] Preferência de alto contraste persistida em `shared_preferences` entre sessões.
+  - [x] Cores do próprio tema atendem WCAG AAA (fundo preto + destaque amarelo: 16,6:1 e 21:1).
+  - [ ] Contraste AA com o modo ligado em **todas** as telas — cronômetro e abas do treino corrigidos no PR #31; demais telas com cores fixas e separação de Cards em #37.
+  - [ ] Ajuste de tamanho de fonte e velocidade da voz (backlog).
 
 ---
 
@@ -211,5 +229,5 @@
 | US12 | Tempo previsto com alertas | 🔜 | S3 |
 | US13 | Registrar conclusão do exercício | 🔜 | S3 |
 | US14 | Ler tela em voz alta | ✅ | — |
-| US15 | Preferências de acessibilidade | 💤 | Backlog |
+| US15 | Preferências de acessibilidade (Alto Contraste) | ✅ | — |
 | US16–US20 | Backlog futuro | 💤 | — |
