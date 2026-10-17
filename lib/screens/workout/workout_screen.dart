@@ -1,10 +1,3 @@
-Aqui está o código com todos os marcadores de conflito (`<<<<<<<`, `=======`, `>>>>>>>`) resolvidos, integrando os recursos das duas branches:
-
-* **Da branch `dev`:** preservado o estado ativo do exercício (`activeExerciseProvider`, `activeState`), botões de play/pause/stop e destaque visual no card.
-* **Da branch `feature/intensidade-exercicio`:** mantida a lógica do filtro por intensidade (`_filterByIntensity`, `intensidadeFilterProvider`, `exerciciosFiltradosProvider`), o chip de intensidade e a leitura acessível de tela atualizada.
-* **Unificação do `_buildExerciseTile`:** o método agora recebe tanto o `Exercicio` quanto o `ActiveExerciseState`, exibindo o chip de intensidade ao lado do botão de reprodução/pausa.
-
-```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -107,9 +100,7 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
             ),
           ],
         ),
-        onTap: () {
-          // Navegação para a tela de detalhe entra quando o PR #30 (Issue #9) mergear.
-        },
+        onTap: () => context.push('/exercise/${exercicio.id}'),
       ),
     );
   }
@@ -352,5 +343,3 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
     );
   }
 }
-
-```
