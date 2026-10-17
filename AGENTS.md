@@ -118,6 +118,20 @@ flutter build apk               # build Android
 flutter build web               # build Web
 ```
 
+### Execução local com dados (login/Firestore)
+
+Antes de qualquer execução ou teste que dependa de dados (login, Firestore),
+garanta: (1) **emulador no ar** — de preferência com persistência:
+
+```bash
+firebase emulators:start --import=.firebase/emulator-data --export-on-exit --project <seu-project-id>
+```
+
+(2) **seed disparado**: abrir o app **uma vez** semeará os dados automaticamente
+(2 contas de teste, `Pessoas` e exercícios — ver `docs/execucao-local.md`). Emulador
+novo/limpo = abrir o app uma vez para repovoar. `rm -rf .firebase/emulator-data`
+recomeça o banco.
+
 ## Regras de qualidade
 
 1. `flutter analyze` sem erros/warnings novos e testes passando (`flutter test`) antes de abrir PR.
@@ -126,6 +140,7 @@ flutter build web               # build Web
 4. Sem segredos/chaves no repositório (configurações Firebase ficam nos arquivos gerados pelo `flutterfire configure`, que não devem conter chaves privadas).
 5. Modelos em `lib/models/` seguem o padrão `fromJson`/`toJson`; providers em `lib/providers/` com Riverpod.
 6. Toda documentação nova em PT-BR dentro de `docs/`.
+7. `lib/routes.dart` não importa modelos nem providers para resolver entidades de detalhe; imports de infraestrutura de navegação e autenticação são permitidos. Navegação de detalhe resolve **um único caminho**: a tela busca o registro por `id` no provider — não duplicar a resolução com `state.extra` de objeto de domínio.
 
 ## Templates
 

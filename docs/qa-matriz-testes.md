@@ -23,6 +23,15 @@ Documento de rastreabilidade de testes e matriz de garantia de qualidade do apli
   - Introdução do `userDisplayNameProvider` para servir o nome de forma síncrona e resiliente ao estado do Auth/Firestore.
   - Atualização do `userDataProvider` para realizar a auto-criação on-demand do documento `Pessoas/{uid}` com `SetOptions(merge: true)`.
 
+### Feature Issue #37 — Conclusão do Modo Alto Contraste & Separação de Cards (US15)
+- **Sintomas:**
+  1. **Cards Pretos em Fundo Preto:** Em Material 3, o papel `surfaceContainerLow` não era definido no `highContrastTheme`, fazendo a cor do Card cair em `surface` (preto), igual ao fundo da tela (`scaffoldBackgroundColor`), perdendo a separação visual.
+  2. **Cores Hardcoded:** Telas com cores fixas (`Colors.white`, `Colors.grey`, etc.) ignoravam o tema ativo, gerando pares com baixo contraste no modo alto contraste.
+- **Solução Aplicada:**
+  - Definição explícita de `surfaceContainerLow` (`0xFF1C1C1C`), `surfaceContainer` (`0xFF262626`) e `surfaceContainerHighest` (`0xFF333333`) no `highContrastTheme`.
+  - Configuração de `cardTheme` com borda visível de alto contraste (`0xFFFFE600`, 2px) e `inputDecorationTheme` para campos de formulário.
+  - Substituição de cores fixas por tokens do `colorScheme` em `welcome_screen.dart`, `login_screen.dart`, `register_screen.dart`, `add_user_screen.dart`, `edit_profile_screen.dart` e `profile_screen.dart`.
+
 ---
 
 ## 2. Matriz de Casos de Teste (QA)

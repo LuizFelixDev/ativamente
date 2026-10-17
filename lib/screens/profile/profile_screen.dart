@@ -140,15 +140,13 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                     const Divider(),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                       onPressed: () {
                         context.push('/add-user');
                       },
-                      child: const Text('Adicionar Usuário', style: TextStyle(color: Colors.white)),
+                      child: const Text('Adicionar Usuário'),
                     ),
                     const SizedBox(height: 8),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                       onPressed: () async {
                         try {
                           await ref.read(seedDatabaseProvider)();
@@ -165,7 +163,7 @@ class ProfileScreen extends ConsumerWidget {
                           }
                         }
                       },
-                      child: const Text('Seed Database (Exercícios & Contas)', style: TextStyle(color: Colors.white)),
+                      child: const Text('Seed Database (Exercícios & Contas)'),
                     ),
                     const SizedBox(height: 24),
                   ],
@@ -177,7 +175,8 @@ class ProfileScreen extends ConsumerWidget {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red[700],
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
             ),
             onPressed: () async {
               await ref.read(authControllerProvider).logout();

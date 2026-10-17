@@ -194,7 +194,7 @@
   - [x] Desativar o switch retorna ao tema padrão.
   - [x] Preferência de alto contraste persistida em `shared_preferences` entre sessões.
   - [x] Cores do próprio tema atendem WCAG AAA (fundo preto + destaque amarelo: 16,6:1 e 21:1).
-  - [ ] Contraste AA com o modo ligado em **todas** as telas — cronômetro e abas do treino corrigidos no PR #31; demais telas com cores fixas e separação de Cards em #37.
+  - [x] Contraste AA com o modo ligado em **todas** as telas — separação visual de Cards e substituição de cores fixas por tokens do tema concluídas (Issue #37).
   - [ ] Ajuste de tamanho de fonte e velocidade da voz (backlog).
 
 ---
@@ -208,6 +208,7 @@
 | US18 | Tela de Progresso/Evolução com histórico de treinos | Aba inativa · issues #26/#49/#58 |
 | US19 | Notificações do sistema (título, conteúdo, data/hora) | Modelo `Notificacao` · issues #32/#33 |
 | US20 | Alinhar modelos Flutter ao modelo conceitual do backend (N:N, Equipamento, flags `usa_*`, mídia estruturada) | `modelo-conceitual.md` §5 |
+| US21 | Exercício com nível de intensidade (escala 1-10: Leve 1-5, Moderado 6-8, Intenso 9-10) | Issue #16 |
 
 ---
 
@@ -231,3 +232,4 @@
 | US14 | Ler tela em voz alta | ✅ | — |
 | US15 | Preferências de acessibilidade (Alto Contraste) | ✅ | — |
 | US16–US20 | Backlog futuro | 💤 | — |
+| US21 | Intensidade do exercício (1-10) | 🔜 | S2 |
