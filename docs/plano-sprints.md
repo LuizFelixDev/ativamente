@@ -138,6 +138,10 @@ gantt
 - **Descrição:** reexecutar matriz completa (`qa-matriz-testes.md`) incluindo os novos fluxos (detalhe, execução, alertas, registro); atualizar `user-stories.md` e `README.md`; fechar issues resolvidas.
 - **DoD:** matriz atualizada sem itens críticos abertos; release tag da iteração.
 
+### T4.3 — Configuração de CI e SonarQube Quality Gate *(Issue #36)*
+- **Tipo:** Infraestrutura / CI-CD · **Responsável:** Taciano Silva · **Status:** 🟡 Em andamento (Branch `feature/configurar-sonarqube-ci`)
+- **Escopo:** Criação do `sonar-project.properties` com exclusões e relatório de cobertura LCOV; pipeline no GitHub Actions (`.github/workflows/ci.yml`) com análise de branch/PR e bloqueio de Quality Gate (`sonar.qualitygate.wait=true`); documentação em `docs/ci-sonarqube.md`.
+
 ---
 
 ## Definition of Done (todas as tarefas)

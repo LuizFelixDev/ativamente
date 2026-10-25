@@ -1,0 +1,88 @@
+# Integração Contínua (CI) e Análise de Qualidade com SonarQube
+
+Este documento descreve a infraestrutura de CI/CD e análise estática de código configurada para o projeto **AtivaMente** (UFRN/Labican), atendendo aos critérios da **Issue #36**.
+
+---
+
+## 1. Visão Geral
+
+A pipeline automatizada do GitHub Actions executa em:
+- **Pushes** nas branches `dev` e `main`.
+- **Pull Requests** direcionados a `dev` e `main`.
+- **Disparo manual** (`workflow_dispatch`).
+
+O pipeline realiza os seguintes passos:
+1. **Checkout completo** do repositório (`fetch-depth: 0`), necessário para cálculo de blame, novas linhas de código e histórico no SonarQube.
+2. **Setup do Java 21** e **Flutter 3.47.1-stable** (alinhado com o `.tool-versions`).
+3. **Instalação de dependências:** `flutter pub get`.
+4. **Análise estática:** `flutter analyze` garantindo conformidade com o linter (`analysis_options.yaml`).
+5. **Execução de testes e cobertura:** `flutter test --coverage`, gerando `coverage/lcov.info`.
+6. **SonarQube Scan:** Execução do scanner com publicação do Quality Gate e associação correta da branch ou Pull Request.
+
+---
+
+## 2. Configurações do SonarQube
+
+O arquivo `sonar-project.properties` na raiz do repositório é a fonte da verdade da configuração do Sonar:
+
+```properties
+sonar.projectKey=labican-ufrn_ativamente
+sonar.projectName=ativamente
+sonar.projectVersion=1.0.0
+sonar.sourceEncoding=UTF-8
+
+sonar.sources=lib
+sonar.tests=test
+
+# Exclusões espelhadas a partir de .ypa/review.yml
+sonar.exclusions=**/test/**,lib/firebase_options.dart,**/*.g.dart,**/*.freezed.dart,build/**,.dart_tool/**
+sonar.coverageExclusions=**/test/**,lib/firebase_options.dart,**/*.g.dart,**/*.freezed.dart,build/**,.dart_tool/**
+
+# Cobertura LCOV gerada por `flutter test --coverage`
+sonar.dart.coverage.reportPaths=coverage/lcov.info
+
+# Bloqueio até avaliação do Quality Gate
+sonar.qualitygate.wait=true
+```
+
+### Exclusões de Análise e Cobertura
+Arquivos gerados automaticamente (`*.g.dart`, `*.freezed.dart`), configurações de plataforma (`lib/firebase_options.dart`), diretórios de build (`build/**`, `.dart_tool/**`) e testes (`test/**`) são excluídos da análise de código de produção e do cômputo de cobertura, evitando ruído e métricas distorcidas.
+
+---
+
+## 3. Segredos no GitHub (Repository Secrets)
+
+Para que a pipeline consiga autenticar e enviar os dados para o servidor do SonarQube ou SonarCloud, devem ser configurados em **Settings > Secrets and variables > Actions**:
+
+| Segredo | Obrigatório | Descrição |
+|---|---|---|
+| `SONAR_TOKEN` | Sim | Token de autenticação gerado na conta/organização do Sonar. |
+| `SONAR_HOST_URL` | Se On-Premise | URL do servidor SonarQube (ex.: `https://sonar.labican.imd.ufrn.br`). Se estiver utilizando o SonarCloud oficial (`https://sonarcloud.io`), este campo pode ser omitido ou configurado com a URL do SonarCloud. |
+
+---
+
+## 4. Análise por Branch e Pull Request
+
+A action está configurada para indexar branches e PRs de forma isolada:
+- **Em Pull Requests:** Os parâmetros `-Dsonar.pullrequest.key`, `-Dsonar.pullrequest.branch` e `-Dsonar.pullrequest.base` garantem que o Sonar decore o PR e reporte o status do Quality Gate diretamente no PR checks.
+- **Em Branches:** O parâmetro `-Dsonar.branch.name` publica o histórico da respectiva branch.
+
+Com `-Dsonar.qualitygate.wait=true`, o job aguarda a avaliação das métricas (incluindo cobertura mínima de 60%, ausência de vulnerabilidades e bugs críticos). Se o Quality Gate falhar, o check no GitHub falha, impedindo merge prematuro.
+
+---
+
+## 5. Execução Manual / Local (Opcional)
+
+Se você tiver o `sonar-scanner` instalado localmente ou via container Docker, pode executar a análise localmente após rodar os testes:
+
+```bash
+# 1. Gerar arquivo de cobertura lcov
+flutter test --coverage
+
+# 2. Executar sonar-scanner via Docker (exemplo)
+docker run --rm \
+  -e SONAR_HOST_URL="<HOST_URL>" \
+  -e SONAR_TOKEN="<SEU_TOKEN>" \
+  -v "$(pwd):/usr/src" \
+  sonarsource/sonar-scanner-cli
+```
