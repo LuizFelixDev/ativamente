@@ -21,13 +21,16 @@
 - **Diretrizes de Acessibilidade & UI:**
   - Todas as telas devem incluir botão de leitura de tela (TTS) com `readScreenProvider`.
   - Manter tamanho de fontes legíveis (`fontSize >= 18`) e áreas de toque ampliadas para o público idoso.
+- **Gestão de Issues e Pull Requests:**
+  - **Sempre** preencher e manter atualizadas as **labels** e a **milestone** correspondente tanto nas issues quanto nos pull requests criados ou modificados, preservando a rastreabilidade da sprint.
 
 ## 🏛️ Decisões de Arquitetura & Entregas
 - **US06 / PR #23 (Perfil Completo):** Implementado por Nathan Lopes (`@nlopesr`) e mesclado em `dev`. Adiciona máscaras automáticas (`MaskTextInputFormatter`), validações biométricas (data, telefone, peso 20-300kg, altura 0.50-2.50m) e exibição reativa dos dados no perfil.
 - **Resolução de Conflitos no `pubspec.yaml`:** Sempre preservar as dependências atualizadas do Firebase vindas da branch `dev`.
 
 ## 🗺️ PRs & Pendências Ativas (Em Fila para Revisão)
-1. **[PR #30](https://github.com/labican-ufrn/ativamente/pull/30):** `Feat/detalhes exercicio` (Tomé Arcanjo - US08).
+1. **[PR #58](https://github.com/labican-ufrn/ativamente/pull/58):** `feat(ci): configura SonarQube com sonar-project.properties e pipeline de CI (#36)` (Taciano Silva / Revisor: @nlopesr / Merge: @LuizFelixDev ou @Icaro-Nonato / Sprint 4).
+2. **[PR #30](https://github.com/labican-ufrn/ativamente/pull/30):** `Feat/detalhes exercicio` (Tomé Arcanjo - US08).
 2. **[PR #32](https://github.com/labican-ufrn/ativamente/pull/32):** `feat: adiciona nível de intensidade (1-10) aos exercícios` (Taciano Silva).
 3. **[PR #31](https://github.com/labican-ufrn/ativamente/pull/31):** `feat: Ativar o botão de Alto Contraste #27` (Luiz Felix).
 4. **[PR #33](https://github.com/labican-ufrn/ativamente/pull/33):** `feat: implementa controle e cronômetro de exercício em execução` (Nathan Lopes - US11).
