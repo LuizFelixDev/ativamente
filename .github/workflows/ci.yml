@@ -71,8 +71,8 @@ jobs:
         run: flutter test --coverage
 
       - name: SonarQube Scan (Pull Request)
-        if: github.event_name == 'pull_request'
-        uses: SonarSource/sonarqube-scan-action@v4
+        if: github.event_name == 'pull_request' && secrets.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -84,8 +84,8 @@ jobs:
             -Dsonar.qualitygate.wait=true
 
       - name: SonarQube Scan (Branch)
-        if: github.event_name != 'pull_request'
-        uses: SonarSource/sonarqube-scan-action@v4
+        if: github.event_name != 'pull_request' && secrets.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -93,3 +93,8 @@ jobs:
           args: >
             -Dsonar.branch.name=${{ github.ref_name }}
             -Dsonar.qualitygate.wait=true
+
+      - name: Inform missing SONAR_TOKEN
+        if: secrets.SONAR_TOKEN == ''
+        run: |
+          echo "::warning title=SONAR_TOKEN ausente::O segredo SONAR_TOKEN não está definido nos segredos do repositório. Para que a análise do SonarQube seja enviada ao servidor, adicione SONAR_TOKEN (e SONAR_HOST_URL se On-Premise) em Settings > Secrets and variables > Actions."

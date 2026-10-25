@@ -39,6 +39,8 @@ sonar.exclusions=**/test/**,lib/firebase_options.dart,**/*.g.dart,**/*.freezed.d
 sonar.coverageExclusions=**/test/**,lib/firebase_options.dart,**/*.g.dart,**/*.freezed.dart,build/**,.dart_tool/**
 
 # Cobertura LCOV gerada por `flutter test --coverage`
+# (sonar.dart.lcov.reportPaths é a propriedade oficial do analisador Dart/Flutter)
+sonar.dart.lcov.reportPaths=coverage/lcov.info
 sonar.dart.coverage.reportPaths=coverage/lcov.info
 
 # Bloqueio até avaliação do Quality Gate
@@ -63,15 +65,35 @@ Para que a pipeline consiga autenticar e enviar os dados para o servidor do Sona
 
 ## 4. Análise por Branch e Pull Request
 
-A action está configurada para indexar branches e PRs de forma isolada:
+A action utiliza a versão oficial segura `SonarSource/sonarqube-scan-action@v6` e está configurada para indexar branches e PRs de forma isolada:
 - **Em Pull Requests:** Os parâmetros `-Dsonar.pullrequest.key`, `-Dsonar.pullrequest.branch` e `-Dsonar.pullrequest.base` garantem que o Sonar decore o PR e reporte o status do Quality Gate diretamente no PR checks.
 - **Em Branches:** O parâmetro `-Dsonar.branch.name` publica o histórico da respectiva branch.
 
-Com `-Dsonar.qualitygate.wait=true`, o job aguarda a avaliação das métricas (incluindo cobertura mínima de 60%, ausência de vulnerabilidades e bugs críticos). Se o Quality Gate falhar, o check no GitHub falha, impedindo merge prematuro.
+Com `-Dsonar.qualitygate.wait=true`, o job aguarda a avaliação das métricas no servidor antes de concluir a execução.
 
 ---
 
-## 5. Execução Manual / Local (Opcional)
+## 5. Configuração do Quality Gate e Proteção de Branches
+
+Para assegurar o piso de **60% de cobertura** e a obrigatoriedade da esteira:
+
+### 5.1. No SonarQube / SonarCloud (Quality Gate)
+1. Acesse o projeto no SonarQube e navegue até **Project Settings > Quality Gate**.
+2. Garanta que o Quality Gate associado ao projeto inclua as seguintes condições:
+   - **Coverage on New Code** (ou **Overall Coverage**): `is less than 60.0%` → **Error** (bloqueia o gate).
+   - **Bugs**, **Vulnerabilities** e **Security Hotspots**: sem ocorrências críticas.
+
+### 5.2. No GitHub (Branch Protection Rules)
+Para que a reprovação no Quality Gate bloqueie efetivamente o botão de merge:
+1. No GitHub, acesse **Settings > Branches**.
+2. Em **Branch protection rules**, configure regras para `dev` e `main`:
+   - Marque **Require status checks to pass before merging**.
+   - Em **Status checks that are required**, selecione o check: `Build, Test & SonarQube Analysis`.
+   - Marque **Require branches to be up to date before merging**.
+
+---
+
+## 6. Execução Manual / Local (Opcional)
 
 Se você tiver o `sonar-scanner` instalado localmente ou via container Docker, pode executar a análise localmente após rodar os testes:
 
