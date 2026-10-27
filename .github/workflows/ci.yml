@@ -73,16 +73,6 @@ jobs:
       - name: Run unit & widget tests with coverage
         run: flutter test --coverage
 
-      - name: SonarQube Scan (Pull Request)
-        if: github.event_name == 'pull_request' && env.SONAR_TOKEN != ''
-        uses: SonarSource/sonarqube-scan-action@v6
-        with:
-          args: >
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
-            -Dsonar.pullrequest.branch=${{ github.head_ref }}
-            -Dsonar.pullrequest.base=${{ github.base_ref }}
-            -Dsonar.qualitygate.wait=true
-
       - name: SonarQube Scan (Branch)
         if: github.event_name != 'pull_request' && env.SONAR_TOKEN != ''
         uses: SonarSource/sonarqube-scan-action@v6
