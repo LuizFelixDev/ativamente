@@ -74,15 +74,21 @@ A action utiliza a versão oficial segura `SonarSource/sonarqube-scan-action@v6`
 
 ## 5. Configuração do Quality Gate e Proteção de Branches
 
-Para assegurar o piso de **60% de cobertura** e a obrigatoriedade da esteira:
+Para assegurar o piso de **65% de cobertura** e a obrigatoriedade da esteira:
 
 ### 5.1. No SonarQube / SonarCloud (Quality Gate)
 1. Acesse o projeto no SonarQube e navegue até **Project Settings > Quality Gate**.
 2. Garanta que o Quality Gate associado ao projeto inclua as seguintes condições:
-   - **Coverage on New Code** (ou **Overall Coverage**): `is less than 60.0%` → **Error** (bloqueia o gate).
+   - **Coverage on New Code** (ou **Overall Coverage**): `is less than 65.0%` → **Error** (bloqueia o gate).
    - **Bugs**, **Vulnerabilities** e **Security Hotspots**: sem ocorrências críticas.
 
-### 5.2. No GitHub (Branch Protection Rules)
+### 5.2. No SonarQube / SonarCloud (Quality Profile de Dart)
+O projeto segue o padrão oficial do **Effective Dart** (`prefer_single_quotes: true`), padronizando o uso de aspas simples:
+1. No menu **Quality Profiles** do SonarQube/SonarCloud, foi criado e associado ao projeto o perfil customizado **`Dart Ativamente`**.
+2. A regra `prefer_double_quotes` foi **desativada**.
+3. O código no repositório segue a regra alinhada com o [`analysis_options.yaml`](../analysis_options.yaml).
+
+### 5.3. No GitHub (Branch Protection Rules)
 Para que a reprovação no Quality Gate bloqueie efetivamente o botão de merge:
 1. No GitHub, acesse **Settings > Branches**.
 2. Em **Branch protection rules**, configure regras para `dev` e `main`:
