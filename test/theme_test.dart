@@ -22,7 +22,7 @@ void main() {
       expect(cardTheme.color, equals(const Color(0xFF1C1C1C)));
       expect(cardTheme.shape, isA<RoundedRectangleBorder>());
 
-      final border = cardTheme.shape;
+      final ShapeBorder? border = cardTheme.shape;
       expect(border, isNotNull);
       if (border is RoundedRectangleBorder) {
         expect(border.side.color, equals(const Color(0xFFFFE600)));
