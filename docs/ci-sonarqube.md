@@ -63,13 +63,12 @@ Para que a pipeline consiga autenticar e enviar os dados para o servidor do Sona
 
 ---
 
-## 4. Análise por Branch e Pull Request
+## 4. Análise com SonarQube Community Edition
 
-A action utiliza a versão oficial segura `SonarSource/sonarqube-scan-action@v6` e está configurada para indexar branches e PRs de forma isolada:
-- **Em Pull Requests:** Os parâmetros `-Dsonar.pullrequest.key`, `-Dsonar.pullrequest.branch` e `-Dsonar.pullrequest.base` garantem que o Sonar decore o PR e reporte o status do Quality Gate diretamente no PR checks.
-- **Em Branches:** O parâmetro `-Dsonar.branch.name` publica o histórico da respectiva branch.
-
-Com `-Dsonar.qualitygate.wait=true`, o job aguarda a avaliação das métricas no servidor antes de concluir a execução.
+A action utiliza a versão oficial segura `SonarSource/sonarqube-scan-action@v6`. Como o servidor utilizado é o **SonarQube Community Edition** (que não possui suporte nativo a múltiplos branches/PRs sem plugins adicionais), a esteira executa a análise de qualidade de forma unificada:
+- O scan é executado em eventos de `push` e `pull_request` para validar a saúde do código e a cobertura LCOV.
+- Não são enviados parâmetros comerciais como `-Dsonar.pullrequest.*` ou `-Dsonar.branch.name`, evitando rejeição por falta de licença comercial no servidor.
+- Com `-Dsonar.qualitygate.wait=true`, o job aguarda a avaliação das métricas no servidor antes de concluir a execução, garantindo que qualquer violação do Quality Gate falhe a esteira no GitHub.
 
 ---
 
