@@ -89,7 +89,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       await FirebaseFirestore.instance
           .collection('Pessoas')
           .doc(user.uid)
-          .update(data);
+          .set(data, SetOptions(merge: true))
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => throw Exception('Tempo limite esgotado. Verifique a conexão com o banco de dados.'),
+          );
           
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

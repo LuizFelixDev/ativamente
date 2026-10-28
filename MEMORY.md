@@ -9,6 +9,8 @@
 - **Status:** Sprint 3 encerrada em 02/10/2026. Sprint 4 iniciada em 02/10/2026.
 
 ## 🧠 Aprendizados & Regras do Projeto
+- **Terminal e Shell Oficial:**
+  - O terminal oficial no Ubuntu é o **Zsh** (`~/.zshrc`) com Oh My Zsh e Powerlevel10k. Variáveis de ambiente, paths (`$HOME/.asdf/shims`, `$HOME/.local/bin`) e comandos interativos devem considerar o `.zshrc`.
 - **Liderança Técnica e Permissões de Merge (a partir de 25/09/2026):**
   - **Líderes Técnicos:** Taciano Silva, Luiz Felix e Ícaro Nonato.
   - **Permissão de Merge:** Podem realizar merge em PRs nos quais não sejam os revisores diretos (Taciano Silva tem permissão para realizar merge em qualquer PR se necessário).
@@ -31,6 +33,15 @@
 ## 🗺️ PRs & Pendências Ativas (Em Fila para Revisão)
 1. **[PR #58](https://github.com/labican-ufrn/ativamente/pull/58):** `feat(ci): configura SonarQube com sonar-project.properties e pipeline de CI (#36)` (Taciano Silva / Revisor: @nlopesr / Merge: @LuizFelixDev ou @Icaro-Nonato / Sprint 4).
 2. **[PR #30](https://github.com/labican-ufrn/ativamente/pull/30):** `Feat/detalhes exercicio` (Tomé Arcanjo - US08).
-2. **[PR #32](https://github.com/labican-ufrn/ativamente/pull/32):** `feat: adiciona nível de intensidade (1-10) aos exercícios` (Taciano Silva).
-3. **[PR #31](https://github.com/labican-ufrn/ativamente/pull/31):** `feat: Ativar o botão de Alto Contraste #27` (Luiz Felix).
-4. **[PR #33](https://github.com/labican-ufrn/ativamente/pull/33):** `feat: implementa controle e cronômetro de exercício em execução` (Nathan Lopes - US11).
+3. **[PR #32](https://github.com/labican-ufrn/ativamente/pull/32):** `feat: adiciona nível de intensidade (1-10) aos exercícios` (Taciano Silva).
+4. **[PR #31](https://github.com/labican-ufrn/ativamente/pull/31):** `feat: Ativar o botão de Alto Contraste #27` (Luiz Felix).
+5. **[PR #33](https://github.com/labican-ufrn/ativamente/pull/33):** `feat: implementa controle e cronômetro de exercício em execução` (Nathan Lopes - US11).
+
+## 📋 Demandas e Pautas para a Próxima Reunião
+1. **Identificação e Login por Nome vs. E-mail ([Issue #21](https://github.com/labican-ufrn/ativamente/issues/21)):**
+   - **Problema registrado:** O login com o nome do usuário (ex.: "Taciano Silva") falha porque o Firebase Authentication opera nativamente com e-mail/senha (`signInWithEmailAndPassword`), enquanto a tela de login (`login_screen.dart`) exibe o rótulo "Usuário" e hint "Email ou Nome", induzindo o idoso a digitar o nome.
+   - **Pauta para a reunião:** Definir se o login será simplificado/unificado exclusivamente para **E-mail** (ajustando os rótulos da UI) ou se será implementada uma busca prévia no Firestore (`Pessoas`) para mapear nome/username para o e-mail correspondente.
+   - **Status:** Decisão postergada para alinhamento na próxima reunião de equipe.
+
+2. **Formalização e Fechamento da [Issue #20](https://github.com/labican-ufrn/ativamente/issues/20):**
+   - Confirmar se a padronização no padrão cinza do tema (`surfaceContainerLow` aplicada no PR #42 + teste de widget adicionado) é a definitiva para encerramento formal da issue.
