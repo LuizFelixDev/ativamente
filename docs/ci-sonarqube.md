@@ -17,7 +17,7 @@ O pipeline realiza os seguintes passos:
 3. **Instalação de dependências:** `flutter pub get`.
 4. **Análise estática:** `flutter analyze` garantindo conformidade com o linter (`analysis_options.yaml`).
 5. **Execução de testes e cobertura:** `flutter test --coverage`, gerando `coverage/lcov.info`.
-6. **SonarQube Scan:** Execução do scanner com publicação do Quality Gate e associação correta da branch ou Pull Request.
+6. **SonarQube Scan:** Execução do scanner com avaliação bloqueante do Quality Gate no SonarQube (modo unificado compatível com a Community Edition).
 
 ---
 
@@ -65,10 +65,11 @@ Para que a pipeline consiga autenticar e enviar os dados para o servidor do Sona
 
 ## 4. Análise com SonarQube Community Edition
 
-A action utiliza a versão oficial segura `SonarSource/sonarqube-scan-action@v6`. Como o servidor utilizado é o **SonarQube Community Edition** (que não possui suporte nativo a múltiplos branches/PRs sem plugins adicionais), a esteira executa a análise de qualidade de forma unificada:
+A action utiliza a versão oficial segura `SonarSource/sonarqube-scan-action@v6`. Como o servidor utilizado é o **SonarQube Community Edition** (que não possui suporte nativo a múltiplos branches/PRs sem plugins adicionais proprietários), a esteira executa a análise de qualidade de forma unificada:
 - O scan é executado em eventos de `push` e `pull_request` para validar a saúde do código e a cobertura LCOV.
-- Não são enviados parâmetros comerciais como `-Dsonar.pullrequest.*` ou `-Dsonar.branch.name`, evitando rejeição por falta de licença comercial no servidor.
-- Com `-Dsonar.qualitygate.wait=true`, o job aguarda a avaliação das métricas no servidor antes de concluir a execução, garantindo que qualquer violação do Quality Gate falhe a esteira no GitHub.
+- Não são enviados parâmetros comerciais como `-Dsonar.pullrequest.*` ou `-Dsonar.branch.name`, evitando rejeição por falta de licença comercial no servidor Community Edition.
+- Com `-Dsonar.qualitygate.wait=true`, o job aguarda a avaliação das métricas no servidor antes de concluir a execução, garantindo que qualquer violação do Quality Gate falhe a esteira no GitHub com **barra vermelha**.
+- Em branches protegidas (`main` e `dev`), a presença do `SONAR_TOKEN` é obrigatória; caso ausente, a esteira falha imediatamente.
 
 ---
 
@@ -77,9 +78,12 @@ A action utiliza a versão oficial segura `SonarSource/sonarqube-scan-action@v6`
 Para assegurar o piso de **65% de cobertura** e a obrigatoriedade da esteira:
 
 ### 5.1. No SonarQube / SonarCloud (Quality Gate)
+> **Responsável pela configuração no servidor:** Taciano Silva ([@tacianosilva](https://github.com/tacianosilva) / Labican).
+
+O parâmetro de 65% de cobertura não é configurável client-side no `sonar-project.properties`; ele deve ser confirmado no próprio painel do SonarQube:
 1. Acesse o projeto no SonarQube e navegue até **Project Settings > Quality Gate**.
 2. Garanta que o Quality Gate associado ao projeto inclua as seguintes condições:
-   - **Coverage on New Code** (ou **Overall Coverage**): `is less than 65.0%` → **Error** (bloqueia o gate).
+   - **Coverage on New Code** (ou **Overall Coverage**): `is less than 65.0%` → **Error** (bloqueia o gate e falha a pipeline).
    - **Bugs**, **Vulnerabilities** e **Security Hotspots**: sem ocorrências críticas.
 
 ### 5.2. No SonarQube / SonarCloud (Quality Profile de Dart)

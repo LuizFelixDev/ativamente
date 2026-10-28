@@ -73,6 +73,12 @@ jobs:
       - name: Run unit & widget tests with coverage
         run: flutter test --coverage
 
+      - name: Fail if SONAR_TOKEN missing on push to main or dev
+        if: env.SONAR_TOKEN == '' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
+        run: |
+          echo "::error title=SONAR_TOKEN obrigatório::O segredo SONAR_TOKEN não está configurado. Pushes para as branches protegidas 'main' e 'dev' exigem análise bloqueante do SonarQube."
+          exit 1
+
       - name: SonarQube Scan
         if: env.SONAR_TOKEN != ''
         uses: SonarSource/sonarqube-scan-action@v6
@@ -81,6 +87,6 @@ jobs:
             -Dsonar.qualitygate.wait=true
 
       - name: Inform missing SONAR_TOKEN
-        if: env.SONAR_TOKEN == ''
+        if: env.SONAR_TOKEN == '' && !(github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'))
         run: |
           echo "::warning title=SONAR_TOKEN ausente::O segredo SONAR_TOKEN não está definido nos segredos do repositório. Para que a análise do SonarQube seja enviada ao servidor, adicione SONAR_TOKEN (e SONAR_HOST_URL se On-Premise) em Settings > Secrets and variables > Actions."

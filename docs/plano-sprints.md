@@ -140,7 +140,7 @@ gantt
 
 ### T4.3 — Configuração de CI e SonarQube Quality Gate *(Issue #36)*
 - **Tipo:** Infraestrutura / CI-CD · **Responsável:** Taciano Silva · **Status:** 🟡 Em andamento (Branch `feature/configurar-sonarqube-ci`)
-- **Escopo:** Criação do `sonar-project.properties` com exclusões e relatório de cobertura LCOV; pipeline no GitHub Actions (`.github/workflows/ci.yml`) com análise de branch/PR e bloqueio de Quality Gate (`sonar.qualitygate.wait=true`); documentação em `docs/ci-sonarqube.md`.
+- **Escopo:** Criação do `sonar-project.properties` com exclusões e relatório de cobertura LCOV; pipeline no GitHub Actions (`.github/workflows/ci.yml`) com scan unificado (Community Edition) e bloqueio por Quality Gate (`sonar.qualitygate.wait=true`); documentação em `docs/ci-sonarqube.md`.
 
 ---
 
