@@ -216,6 +216,7 @@ class _ExecutionControlCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final notifier = ref.read(activeExerciseProvider.notifier);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -264,6 +265,110 @@ class _ExecutionControlCard extends ConsumerWidget {
                   color: colorScheme.onSurface,
                 ),
               ),
+            ),
+            const SizedBox(height: 20),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                Semantics(
+                  button: true,
+                  enabled: !isRunning,
+                  label: 'Iniciar exercício',
+                  child: Tooltip(
+                    message: 'Iniciar exercício',
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(120, 52),
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
+                        disabledBackgroundColor:
+                            colorScheme.surfaceContainerHighest,
+                        disabledForegroundColor: colorScheme.onSurface
+                            .withValues(alpha: 0.7),
+                      ),
+                      onPressed: isRunning
+                          ? null
+                          : () => notifier.startExercise(exerciseId),
+                      icon: const Icon(Icons.play_arrow, size: 28),
+                      label: const Text(
+                        'Iniciar',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Semantics(
+                  button: true,
+                  enabled: isRunning,
+                  label: 'Pausar exercício',
+                  child: Tooltip(
+                    message: 'Pausar exercício',
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(120, 52),
+                        foregroundColor: colorScheme.primary,
+                        disabledForegroundColor: colorScheme.onSurface
+                            .withValues(alpha: 0.7),
+                        side: BorderSide(
+                          color: isRunning
+                              ? colorScheme.primary
+                              : colorScheme.onSurface.withValues(alpha: 0.5),
+                          width: 2,
+                        ),
+                      ),
+                      onPressed: isRunning
+                          ? () => notifier.pauseExercise()
+                          : null,
+                      icon: const Icon(Icons.pause, size: 28),
+                      label: const Text(
+                        'Pausar',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Semantics(
+                  button: true,
+                  enabled: isThisActive,
+                  label: 'Parar exercício',
+                  child: Tooltip(
+                    message: 'Parar exercício',
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(120, 52),
+                        foregroundColor: colorScheme.error,
+                        disabledForegroundColor: colorScheme.onSurface
+                            .withValues(alpha: 0.7),
+                        side: BorderSide(
+                          color: isThisActive
+                              ? colorScheme.error
+                              : colorScheme.onSurface.withValues(alpha: 0.5),
+                          width: 2,
+                        ),
+                      ),
+                      onPressed: isThisActive
+                          ? () => notifier.stopExercise()
+                          : null,
+                      icon: const Icon(Icons.stop, size: 28),
+                      label: const Text(
+                        'Parar',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
