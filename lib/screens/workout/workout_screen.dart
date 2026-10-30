@@ -274,8 +274,11 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                                 .toList();
 
                             if (filteredExercicios.isEmpty) {
-                              return const Center(
-                                child: Text('Nenhum exercício encontrado.'),
+                              return Center(
+                                child: Text(
+                                  'Nenhum exercício encontrado.',
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
                               );
                             }
 
@@ -291,8 +294,21 @@ class _WorkoutScreenState extends ConsumerState<WorkoutScreen> {
                           },
                           loading: () =>
                               const Center(child: CircularProgressIndicator()),
-                          error: (err, stack) =>
-                              Center(child: Text('Erro: $err')),
+                          error: (err, stack) {
+                            debugPrint(
+                              'Erro ao carregar exercícios filtrados: $err',
+                            );
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Text(
+                                  'Não foi possível carregar os exercícios no momento. Por favor, tente novamente mais tarde.',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                   ),
                 ],
