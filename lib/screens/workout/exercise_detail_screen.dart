@@ -67,8 +67,6 @@ class _StateScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final readScreen = ref.watch(readScreenProvider(screenText));
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -82,7 +80,7 @@ class _StateScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.volume_up, size: 28),
             constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-            onPressed: readScreen,
+            onPressed: () => ref.read(readScreenProvider(screenText))(),
             tooltip: 'Ler tela',
           ),
         ],
@@ -282,6 +280,7 @@ class _ExecutionControlCard extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Semantics(
+                  container: true,
                   liveRegion: true,
                   child: Text(
                     statusLabel,
@@ -296,6 +295,7 @@ class _ExecutionControlCard extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             Semantics(
+              container: true,
               excludeSemantics: true,
               label: 'Tempo decorrido: $formattedTime',
               child: Text(
