@@ -73,12 +73,15 @@ class _StateScreen extends ConsumerWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
+          tooltip: 'Voltar',
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           onPressed: () => _goBack(context),
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: const Icon(Icons.volume_up, size: 28),
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             onPressed: readScreen,
             tooltip: 'Ler tela',
           ),
@@ -111,9 +114,8 @@ class _ExerciseDetailBody extends ConsumerWidget {
 
   final Exercicio exercicio;
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final activeState = ref.watch(activeExerciseProvider);
+  void _readCurrentScreen(WidgetRef ref) {
+    final activeState = ref.read(activeExerciseProvider);
     final isThisActive = activeState.exerciseId == exercicio.id;
     final isRunning = isThisActive && activeState.isRunning;
     final isPaused = isThisActive && !activeState.isRunning;
@@ -131,19 +133,25 @@ class _ExerciseDetailBody extends ConsumerWidget {
         'Tempo decorrido: $formattedTime. '
         'Categoria: ${exercicio.categoria.nome}. '
         'Tipo: ${exercicio.tipo.nome}. Descrição: ${exercicio.descricao}';
-    final readScreen = ref.watch(readScreenProvider(screenText));
+    ref.read(readScreenProvider(screenText))();
+  }
 
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
+          tooltip: 'Voltar',
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           onPressed: () => _goBack(context),
         ),
         title: const Text('Voltar', style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: const Icon(Icons.volume_up, size: 28),
-            onPressed: readScreen,
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+            onPressed: () => _readCurrentScreen(ref),
             tooltip: 'Ler tela',
           ),
         ],
@@ -167,13 +175,7 @@ class _ExerciseDetailBody extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 24),
-            _ExecutionControlCard(
-              exerciseId: exercicio.id,
-              isThisActive: isThisActive,
-              isRunning: isRunning,
-              statusLabel: statusLabel,
-              formattedTime: formattedTime,
-            ),
+            _ExecutionControlCard(exerciseId: exercicio.id),
             const SizedBox(height: 24),
             const _MediaPlaceholder(),
             const SizedBox(height: 24),
@@ -199,22 +201,24 @@ class _ExerciseDetailBody extends ConsumerWidget {
 }
 
 class _ExecutionControlCard extends ConsumerWidget {
-  const _ExecutionControlCard({
-    required this.exerciseId,
-    required this.isThisActive,
-    required this.isRunning,
-    required this.statusLabel,
-    required this.formattedTime,
-  });
+  const _ExecutionControlCard({required this.exerciseId});
 
   final String exerciseId;
-  final bool isThisActive;
-  final bool isRunning;
-  final String statusLabel;
-  final String formattedTime;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final activeState = ref.watch(activeExerciseProvider);
+    final isThisActive = activeState.exerciseId == exerciseId;
+    final isRunning = isThisActive && activeState.isRunning;
+    final isPaused = isThisActive && !activeState.isRunning;
+    final elapsedSeconds = isThisActive ? activeState.elapsedSeconds : 0;
+
+    final statusLabel = isRunning
+        ? 'Em execução'
+        : isPaused
+        ? 'Pausado'
+        : 'Parado';
+    final formattedTime = _formatTime(elapsedSeconds);
     final colorScheme = Theme.of(context).colorScheme;
     final notifier = ref.read(activeExerciseProvider.notifier);
 
